@@ -1,0 +1,21 @@
+@import 'base';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+textarea {
+  resize: none
+}
+
+@layer components {
+  .button-primary {
+    @apply mt-4 px-4 py-2 bg-blue-500 text-white rounded
+  }
+}
