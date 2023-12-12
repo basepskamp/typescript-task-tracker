@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import InputElement from "@/components/form-elements/InputElement.vue";
 import LabelElement from "@/components/form-elements/LabelElement.vue";
 import TextareaElement from "@/components/form-elements/TextareaElement.vue";
-import { onMounted, ref } from "vue";
+import DateElement from "@/components/form-elements/DateElement.vue";
 
 const emit = defineEmits(['update:modelValue'])
 
 const props = defineProps({
   inputType: {
     type: String,
-    required: false
+    required: false,
+    default: 'text'
   },
   element: {
     type: String,
@@ -21,26 +23,27 @@ const props = defineProps({
   },
   initialData: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   }
 })
 
 const inputValue = props.initialData ? ref(props.initialData) : ref('')
-
-//on mounted we immediately emit to make sure the input value is in sync when it's prefilled
-onMounted(() => {
-  emit('update:modelValue', inputValue.value);
-});
 </script>
 
 <template>
   <div>
-    <LabelElement> {{labelTitle}} </LabelElement>
+    <LabelElement> {{ labelTitle }} </LabelElement>
     <InputElement
-      v-if="element === 'input'"
+      v-if="element === 'inputText'"
       v-model="inputValue"
       placeholder="Task Name"
-      :type="(inputType) ? inputType : 'text'"
+      required
+      @change="emit('update:modelValue', inputValue)"
+    />
+    <DateElement
+      v-if="element === 'inputDate'"
+      v-model="inputValue"
       required
       @change="emit('update:modelValue', inputValue)"
     />

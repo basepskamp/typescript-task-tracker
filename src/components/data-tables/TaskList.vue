@@ -9,15 +9,24 @@ const taskListHeaders = ['Name', 'Description', 'Due Date', 'Actions'];
 const taskList = ref(tasksStore.taskList);
 
 onMounted(() => {
-  // Retrieve locally saved tasks from localStorage
-  const locallySavedTasks = localStorage.getItem('taskList')
-  // If there are locally saved tasks, add them to the store
-  if (locallySavedTasks) {
-    //when we load in locally stored tasks, we empty the store first, so we don't get duplicates in hot reloading (no production issue)
-    tasksStore.taskList.pop();
-    for (const value of JSON.parse(locallySavedTasks)) {
-      tasksStore.addNewTask(<SingleTask>value)
+  try {
+    const locallySavedTasks = localStorage.getItem('taskList')
+
+    if (locallySavedTasks) {
+      tasksStore.taskList.splice(0, tasksStore.taskList.length);
+      const savedTasks = JSON.parse(locallySavedTasks);
+
+      savedTasks.forEach((value: any) => {
+        const task = {...value} as SingleTask;
+        if(!task.name || !task.description || !task.dueDate){
+          console.error("Stored task does not have required keys");
+        } else {
+          tasksStore.addNewTask(task)
+        }
+      });
     }
+  } catch (error) {
+    console.error("Error loading tasks from local storage", error);
   }
 })
 
@@ -45,8 +54,8 @@ watch(tasksStore.taskList, async () => {
 
 <template>
   <button
-    @click="updateTaskFormModal({isActive: true, isEditing: false})"
     class="button-primary float-right mb-4"
+    @click="updateTaskFormModal({isActive: true, isEditing: false})"
   >
     Add Task
   </button>
@@ -54,16 +63,17 @@ watch(tasksStore.taskList, async () => {
       <thead>
         <tr>
           <th
+            v-for="header in taskListHeaders"
+            :key="header"
             scope="col"
             class="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider"
-            v-for="header in taskListHeaders"
           >
             {{ header }}
           </th>
         </tr>
       </thead>
       <tbody class="divide-y">
-        <tr class="dark:hover:bg-gray-800 hover:bg-gray-200" v-for="task in taskList" :key="task.id">
+        <tr v-for="task in taskList" :key="task.id" class="dark:hover:bg-gray-800 hover:bg-gray-200">
           <td class="px-6 py-4 w-1/4">
             {{ task.name }}
           </td>
@@ -75,8 +85,16 @@ watch(tasksStore.taskList, async () => {
           </td>
           <td
             class="w-1/10 px6 py-4 cursor-pointer flex justify-evenly">
-            <font-awesome-icon class="hover:scale-125" icon="fa-solid fa-pen-to-square" @click="editTask(<number>task.id)"/>
-            <font-awesome-icon class="hover:scale-125" icon="fa-solid fa-trash" @click="deleteTask(<number>task.id)"/>
+            <font-awesome-icon
+              class="hover:scale-125"
+              icon="fa-solid fa-pen-to-square"
+              @click="task.id !== undefined ? editTask(task.id) : undefined"
+            />
+            <font-awesome-icon
+              class="hover:scale-125"
+              icon="fa-solid fa-trash"
+              @click="task.id !== undefined ? deleteTask(task.id) : undefined"
+            />
           </td>
         </tr>
       </tbody>

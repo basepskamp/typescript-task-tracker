@@ -1,10 +1,7 @@
 <template>
   <main>
-    <TaskList
-    />
-    <TaskForm
-      v-if="tasksStore.taskFormModal.isActive"
-    />
+    <TaskList />
+    <TaskForm v-if="tasksStore.taskFormModal.isActive"/>
   </main>
 </template>
 <script setup lang="ts">

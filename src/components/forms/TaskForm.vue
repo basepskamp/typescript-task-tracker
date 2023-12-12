@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, nextTick} from "vue";
+import {onMounted, ref} from "vue";
 import { useTasksStore } from "@/stores/tasks";
 import { updateTaskFormModal } from "@/helpers/commonFunctions";
 import FormInput from "@/components/form-elements/FormInput.vue";
@@ -26,10 +26,7 @@ const initializeForm = () => {
       taskDueDate.value = tasksStore.taskList[indexToFind].dueDate;
     }
   }
-  nextTick(() => {
-    // After initialization is complete, set isInitialized to true
-    isInitialized.value = true;
-  });
+  isInitialized.value = true;
 };
 
 onMounted(() => {
@@ -75,34 +72,32 @@ function saveTaskData() {
         <h2 class="mb-10 text-2xl font-bold">
           {{ tasksStore.taskFormModal.isEditing ? 'Edit' : 'Create' }} Task
         </h2>
-          <FormInput
-            v-if="isInitialized"
-            inputType="text"
-            element="input"
-            labelTitle="Task Name"
-            :initialData="taskName"
-            v-model="taskName"
-            class="mb-6"
-          />
+        <FormInput
+          v-if="isInitialized"
+          v-model="taskName"
+          element="inputText"
+          label-title="Task Name"
+          :initial-data="taskName"
+          class="mb-6"
+        />
 
-          <FormInput
-            v-if="isInitialized"
-            element="input"
-            labelTitle="Description"
-            v-model="taskDescription"
-            :initialData="taskDescription"
-            class="mb-6"
-          />
+        <FormInput
+          v-if="isInitialized"
+          v-model="taskDescription"
+          element="textarea"
+          label-title="Description"
+          :initial-data="taskDescription"
+          class="mb-6"
+        />
 
-          <FormInput
-            v-if="isInitialized"
-            inputType="date"
-            element="input"
-            labelTitle="Due date"
-            v-model="taskDueDate"
-            :initialData="taskDueDate"
-            class="mb-6"
-          />
+        <FormInput
+          v-if="isInitialized"
+          v-model="taskDueDate"
+          element="inputDate"
+          label-title="Due date"
+          :initial-data="taskDueDate"
+          class="mb-6"
+        />
 
         <button
           class="button-primary"
