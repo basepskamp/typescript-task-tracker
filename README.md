@@ -7,7 +7,7 @@ Techniques used:
 - Vite
 - Typescript
 - Typescript
-- Tailwind
+- Tailwind (supports dark and light mode preference)
 
 The code structure showcases the atomic components approach. This can be overkill for a small application like this but 
 will be proper scalable in terms of further development and maintenance and keeps everything nice and seperated.
