@@ -100,7 +100,7 @@ function saveTaskData() {
         />
 
         <button
-          class="button-primary"
+          class="button-primary float-right"
           type="submit"
         >
           Save

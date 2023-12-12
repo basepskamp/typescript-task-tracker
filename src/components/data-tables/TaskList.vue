@@ -54,14 +54,15 @@ watch(tasksStore.taskList, async () => {
 
 <template>
   <button
+    v-if="taskList.length > 0"
     class="button-primary float-right mb-4"
     @click="updateTaskFormModal({isActive: true, isEditing: false})"
   >
     Add Task
   </button>
-    <table class="table-fixed min-w-full divide-y divide-gray-200">
+    <table v-if="taskList.length > 0" class="table-fixed min-w-full divide-y divide-gray-200">
       <thead>
-        <tr>
+        <tr >
           <th
             v-for="header in taskListHeaders"
             :key="header"
@@ -73,7 +74,7 @@ watch(tasksStore.taskList, async () => {
         </tr>
       </thead>
       <tbody class="divide-y">
-        <tr v-for="task in taskList" :key="task.id" class="dark:hover:bg-gray-800 hover:bg-gray-200">
+        <tr v-for="task in taskList" :key="task.id" class="bg-gray-100 even:bg-gray-200 hover:bg-gray-300 dark:even:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-900">
           <td class="px-6 py-4 w-1/4">
             {{ task.name }}
           </td>
@@ -84,14 +85,14 @@ watch(tasksStore.taskList, async () => {
             {{ task.dueDate }}
           </td>
           <td
-            class="w-1/10 px6 py-4 cursor-pointer flex justify-evenly">
+            class="w-1/10 px6 py-4 cursor-pointer text-center">
             <font-awesome-icon
-              class="hover:scale-125"
+              class="hover:scale-125 mr-2"
               icon="fa-solid fa-pen-to-square"
               @click="task.id !== undefined ? editTask(task.id) : undefined"
             />
             <font-awesome-icon
-              class="hover:scale-125"
+              class="hover:scale-125 ml-2"
               icon="fa-solid fa-trash"
               @click="task.id !== undefined ? deleteTask(task.id) : undefined"
             />
@@ -99,6 +100,16 @@ watch(tasksStore.taskList, async () => {
         </tr>
       </tbody>
     </table>
+    <div v-if="taskList.length === 0" class="w-full text-center">
+      <h2 class="text-2xl">No tasks yet, add one!</h2>
+      <button
+        class="button-primary text-center mb-4"
+        @click="updateTaskFormModal({isActive: true, isEditing: false})"
+      >
+        Add Task
+      </button>
+    </div>
+
 </template>
 
 <style scoped lang="scss">
